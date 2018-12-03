@@ -1,221 +1,289 @@
 #include <iostream>
-#include <cmath>
-#include "Color.h" 
-#include "graph1.h" 
+#include "graph1.h"
+#include "Color.h"
 
 Color::Color()
 {
-  setColor(0,0,0);
+r = 0;
+g = 0;
+b = 0;
 }
-
 Color::Color(int r, int g, int b)
-{
-  setColor(r,g,b);
-}
-
-
-
-void Color::setColor(int r, int g, int b)
 {
   this->r = r;
   this->g = g;
   this->b = b;
 }
-
-int Color::getRed()
+void Color::setColor(int r, int g, int b)
 {
-  return(r);
-}
-
-int Color::getGreen()
-{
-  return(g);
-}
-
-int Color::getBlue()
-{
-  return(b);
+this->r = r;
+this->g = g;
+this->b = b;
 }
 
 Color Color::operator+(Color right)
 {
-  Color ret_val;
-  ret_val.r = (r + right.r)%256;
-  ret_val.g = (g + right.g)%256;
-  ret_val.b = (b + right.b)%256;
+  Color result;
 
-  return(ret_val);
-  
+  result.r = r + right.r;
+  if (result.r > 255)
+  {
+    result.r = 255;
+  }
+
+  result.g = g + right.g;
+  if (result.g > 255)
+  {
+    result.r = 255;
+  }
+
+  result.b = b + right.b;
+  if (result.b > 255)
+  {
+    result.b = 255;
+  }
+return result;
 }
 
 Color Color::operator-(Color right)
 {
-  Color ret_val;
-  ret_val.r = abs(r - right.r);
-  ret_val.g = abs(g - right.g);
-  ret_val.b = abs(b - right.b);
+Color result;
 
-  return(ret_val);
+result.r = r - right.r; 
+if (result.r < 0)
+{
+  result.r = 0;
+}
+
+result.g = g - right.g;
+if (result.g < 0)
+{
+  result.r = 0;
+}
+
+result.b = b - right.b;
+if (result.b < 0)
+{
+  result.b = 0;
+}
+return result;
 }
 
 Color Color::operator/(int right)
 {
-  Color ret_val;
-  ret_val.r = r/right;
-  ret_val.g = g/right;
-  ret_val.b = b/right;
+  Color result;
 
-  return(ret_val);
+  result.r = r / right;
+  if (result.r < 0)
+  {
+    result.r = 0;
+  }
+
+  result.g = g / right;
+  if (result.g < 0)
+  {
+    result.r = 0;
+  }
+
+  result.b = b / right;
+  if (result.b < 0)
+  {
+    result.b = 0;
+  }
+return result;
 }
 
 Color Color::operator*(int right)
 {
-  Color ret_val;
-  ret_val.r = (r*right)%256;
-  ret_val.g = (g*right)%256;
-  ret_val.b = (b*right)%256;
+  Color result;
 
-  return(ret_val);
+  result.r = r * right;
+  if (result.r < 0)
+  {
+    result.r = 0;
+  }
+
+  result.g = g - right;
+  if (result.g < 0)
+  {
+    result.r = 0;
+  }
+
+  result.b = b - right;
+  if (result.b < 0)
+  {
+    result.b = 0;
+  }
+return result;
 }
 
 bool Color::operator==(Color right)
 {
-  if ( (r == right.r) && (b == right.b) && (g == right.g) )
-    return(true);
+  bool result = false;
+
+  if (r == right.r)
+  {
+    result= true;
+  }
+  else if (g != right.g)
+  {
+    result =true;
+  }
+  else if (b != right.b)
+  {
+    result= true;
+  }
   else
-    return(false);
+{   
+ return false;
+}
+return result;
 }
 
 bool Color::operator!=(Color right)
 {
-  if ( (r == right.r) && (b == right.b) && (g == right.g) )
-    return(false);
-  else
-    return(true);
+bool notequal = true;
+
+if (r != right.r)
+{
+return notequal;
+}
+else if (g != right.g)
+{
+  return notequal;
+}
+else if (b != right.b)
+{
+  return notequal;
+}
+else
+return false;
 }
 
 void Color::operator=(Color right)
 {
-  r = right.r;
-  b = right.b;
-  g = right.g;
-  
+  Color result;
+r = right.r;
+g = right.g;
+b = right.b;
 }
 
 Color Color::operator!()
 {
-  Color ret_val;
-  ret_val.r = 255 - r;
-  ret_val.g = 255 - g;
-  ret_val.b = 255 - b;
-
-  return(ret_val);
-  
-}
-
-void Color::draw(int x, int y, int w, int h)
-{
-  int obj_no = drawRect(x,y,w,h);
-  ::setColor(obj_no,r,g,b);
-  
+Color result;
+result.r = 255-r;
+result.g = 255-g;
+result.b = 255-b;
+return result;
 }
 
 Color Color::operator++()
 {
-  r += 25;
-  g += 25;
-  b += 25;
+  Color result;
 
-  if (r > 255)
-    r = 255;
+  result.r = r + 25;
+  if (result.r > 255)
+    result.r = 255;
 
-  if (g > 255)
-    g = 255;
+  result.g = g + 25;
+  if (result.g > 255)
+    result.g = 255;
 
-  if (b > 255)
-    b = 255;
+  result.b = b + 25;
+  if (result.b > 255)
+    result.b = 255;
 
-  return(*this);
+  return result;
 }
 
 Color Color::operator++(int dummy)
 {
-  Color orig = *this;
+  Color result;
 
-  r += 25;
-  g += 25;
-  b += 25;
+  result.r = r + 25;
+  if (result.r > 255)
+    result.r = 255;
 
- if (r > 255)
-    r = 255;
+  result.g = g + 25;
+  if (result.g > 255)
+    result.g = 255;
 
-  if (g > 255)
-    g = 255;
+  result.b = b + 25;
+  if (result.b > 255)
+    result.b = 255;
 
-  if (b > 255)
-    b = 255;
-
-  return(orig);
+  return result;
 }
 
 Color Color::operator--()
 {
-  r -= 25;
-  g -= 25;
-  b -= 25;
+  Color result;
 
-  if (r < 0)
-    r = 0;
+  result.r = r - 25;
+  if (result.r < 0)
+    result.r = 0;
 
-  if (g < 0)
-    g = 0;
+  result.g = g - 25;
+  if (result.g < 0)
+    result.g = 0;
 
-  if (b < 0)
-    b = 0;
+  result.b = b - 25;
+  if (result.b < 0)
+    result.b = 0;
 
-  return(*this);
+  return result;
 }
 
 Color Color::operator--(int dummy)
 {
-  Color orig = *this;
+  Color result;
 
-  r -= 25;
-  g -= 25;
-  b -= 25;
+  result.r = r - 25;
+  if (result.r < 0)
+    result.r = 0;
 
-  if (r < 0)
-    r = 0;
+  result.g = g - 25;
+  if (result.g < 0)
+    result.g = 0;
 
-  if (g < 0)
-    g = 0;
+  result.b = b - 25;
+  if (result.b < 0)
+    result.b = 0;
 
-  if (b < 0)
-    b = 0;
-
-  return(orig);
+  return result;
 }
 
 bool Color::operator<(Color right)
 {
-  //Compute the magnitude of the right
-  double magr = sqrt( (double)((right.r*right.r) + (right.g*right.g) + (right.b*right.b)));
-  double magl = sqrt( (double)((r*r) + (g*g) + (b*b)));
+  bool result = true;
 
-  if (magl < magr)
-    return(true);
-  else
-    return(false);
+  if (r < right.r)
+    return result;
+  else if (g < right.g)
+    return result;
+  else if (b < right.b)
+    return result;
+  else result = false;
+  return result;
 }
 
 bool Color::operator>(Color right)
 {
-  double magr = sqrt( (double)((right.r*right.r) + (right.g*right.g) + (right.b*right.b)));
-  double magl = sqrt( (double)((r*r) + (g*g) + (b*b)));
+  bool result = true;
 
-  if (magl < magr)
-    return(false);
-  else
-    return(true);
+  if (r > right.r)
+    return result;
+  else if (g > right.g)
+    return result;
+  else if (b > right.b)
+    return result;
+  else result = false;
+  return result;
+}
+
+void Color::draw(int x, int y, int w, int h)
+{
+int obj = drawRect(x,y,w,h);
+::setColor (obj, r, g, b);
 }
 

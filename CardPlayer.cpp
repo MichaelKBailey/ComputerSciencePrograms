@@ -1,119 +1,135 @@
 #include <iostream>
-#include <ctime>
 #include "graph1.h"
+#include "CardPlayer.h"
 
-class Cards
+CardPlayer::CardPlayer()
 {
-  private:
-    int noCards;
-    int topCard;
-    int* deck;
-
-  public:
-    Cards();
-    Cards(int noCards);
-    ~Cards();
-    int getNoCards();
-    int dealACard();
-    void shuffle();
-    void displayCard(int cardNo, int x, int y);
-};
-
-
-Cards::Cards(int noCards)
-{
-  this->noCards = noCards;
-  topCard = 0;
-  deck = new int[noCards];
+  noCards = 0;
+  hand = nullptr;
+  color = 'r';
 }
 
-Cards::~Cards()
+//destructor for CardPlayer class
+CardPlayer::~CardPlayer()
 {
-  delete[] deck;
+  delete[] hand;
 }
 
-int Cards::getNoCards()
+//card numbers setter
+void CardPlayer::setNoCards(int noCards)
 {
-  return noCards;
-}
-
-int Cards::dealACard()
-{
-  if (topCard < noCards)
-  { 
-    return(deck[topCard++]);
+  if (noCards < 5)
+  {
+  this-> noCards = 5;
+  }
+  else if (noCards > 10)
+  {
+  this-> noCards = 10;
   }
   else
   {
-    //Indicate that the deck has been dealt by returning -1
-    return -1;
+  this-> noCards = noCards;
+  }
+  
+//dynamically allocate hand array
+  hand = new int[this->noCards];
+}
+
+//card numbers getter
+int CardPlayer::getNoCards()
+{
+ return noCards;
+}
+
+//set color
+void CardPlayer::setColor(char color)
+{
+ this->color = color;
+}
+
+//display hands
+void CardPlayer::displayHand(int x, int y)
+{
+ string filename;
+  for (int i = 0; i < noCards; i++)
+  {
+    if (color == 'r')
+    {
+    filename = ("d" + to_string(hand[i]) + ".bmp");
+    }
+    else
+    {
+    filename = ("c" + to_string(hand[i]) + ".bmp");
+    }
+ displayBMP(filename, x, y + i * 20);
   }
 }
 
-void Cards::shuffle()
+//compute score
+int CardPlayer::computeScore()
 {
-  int i = 0;
-  int j = 0;
-  bool duplicates = false;
-
-  srand(time(0));
-  for (i = 0; i < noCards; i++)
+ int score = 0;
+  for (int i = 0; i < noCards; i++)
   {
-    deck[i] = rand()%noCards + 2;
+    if (hand[i] <= 10)
+    {
+    score = score + hand[i];
+    }
+    else if (hand[i] < 14)
+    {
+    score = score + 10;
+    }
+    else if (hand[i] == 14)
+    {
+    score = score + 11;
+    }  
+  }
+ return score;
+}
 
+//deal cards method
+void CardPlayer::deal()
+{
+ bool duplicate = false;
+
+  for (int i = 0; i < noCards; i++)
+  {
+   hand[i] = rand() % 13 + 2;
     do
     {
-      //Check for duplicate
-      duplicates = false;
-
-      for (j = 0; j < i; j++)
+    duplicate = false;
+      for (int j = 0; j < i; j++)
       {
-        if (deck[j] == deck[i])
+        if (hand[i] == hand[j])
         {
-          deck[i] = rand()%noCards + 2;
-          duplicates = true;
+          hand[i] = rand() % 13 + 2;
+          duplicate = true;
+          break;
         }
       }
-    }while(duplicates);
+    } while (duplicate);
   }
+sortHand(hand, noCards);
 }
-  void Cards::displayCard(int cardNo, int x, int y)
-  {
-    //Display hearts for this case
-    string fn = "h" + to_string(cardNo) + ".bmp";
-    displayBMP(fn, x,y);
-  }
 
-int main()
+//Selection Sort
+void CardPlayer::sortHand(int hand[], int noCards)
 {
-  //Only process one suit
-  int i = 0;
-  int x = 100;
-  int y = 50;
-  int cardNo = 0;
-  Cards cards(13);
+int startScan, minIndex, minValue;
 
-  displayGraphics();
-
-  //Shuffle the cards
-  cards.shuffle();
-
-  //Deal the cards (one at a time)
-  for (i = 0; i < cards.getNoCards(); i++)
+  for (startScan = 0; startScan < (noCards -1); startScan++)
   {
-    //Get the card no from the top
-    cardNo = cards.dealACard();
-
-    //Display the card
-    cards.displayCard(cardNo,x,y);
-    Sleep(1000);
-  
-    //Increment y
-    y += 20;
+   minIndex = startScan;
+   minValue = hand[startScan];
+    for (int i = startScan+1; i < noCards; i++)
+    {
+      if (hand[i] < minValue)
+      {
+       minValue = hand[i];
+       minIndex = i;
+      }
+    } 
+   hand[minIndex] = hand[startScan];
+   hand[startScan] = minValue;
   }
-
-  return 0;
-
-  
-
 }
